@@ -10,10 +10,10 @@ def index():
 @app.route('/emotionDetector', methods=['GET'])
 def emotion_detect():
     text_to_analyse = request.args.get('textToAnalyze')    
-    if not text_to_analyse:
-        return "Error: No text provided."
     try:
         result = emotion_detector(text_to_analyse)
+        if not result['dominant_emotion']:
+            return "Invalid text! Please try again!"
         response_text = (
             f"For the given statement, the system response is "
             f"'anger': {result['anger']}, "

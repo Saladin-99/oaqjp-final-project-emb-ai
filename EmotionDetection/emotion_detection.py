@@ -12,7 +12,16 @@ def emotion_detector(text_to_analyse):
         }
     }
     response = requests.post(url, headers=headers, json=payload)
-    if response.status_code == 200:
+    if response.status_code == 400:
+        return {
+            "anger": None,
+            "disgust": None,
+            "fear": None,
+            "joy": None,
+            "sadness": None,
+            "dominant_emotion": None
+        }
+    elif response.status_code == 200:
         result = response.json()
         try:
             emotions = result['emotionPredictions'][0]['emotionMentions'][0]['emotion']
@@ -20,6 +29,13 @@ def emotion_detector(text_to_analyse):
             full_response = {**emotions, "dominant_emotion": dominant_emotion}
             return full_response
         except (KeyError, IndexError):
-            return "Could not extract emotion scores."
+            return {
+                "anger": None,
+                "disgust": None,
+                "fear": None,
+                "joy": None,
+                "sadness": None,
+                "dominant_emotion": None
+            }
     else:
         raise Exception(f"Request failed with status code {response.status_code}: {response.text}")
