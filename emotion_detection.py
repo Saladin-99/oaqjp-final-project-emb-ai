@@ -15,10 +15,11 @@ def emotion_detector(text_to_analyse):
     if response.status_code == 200:
         result = response.json()
         try:
-            #print(result)
-            text_value = result['emotionPredictions'][0]['emotionMentions'][0]['span']['text']
-            return text_value
+            emotions = result['emotionPredictions'][0]['emotionMentions'][0]['emotion']
+            dominant_emotion = max(emotions, key=emotions.get)
+            full_response = {**emotions, "dominant_emotion": dominant_emotion}
+            return full_response
         except (KeyError, IndexError):
-            return "Could not extract text value."
+            return "Could not extract emotion scores."
     else:
         raise Exception(f"Request failed with status code {response.status_code}: {response.text}")
